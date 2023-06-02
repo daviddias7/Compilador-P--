@@ -84,15 +84,4 @@ class PascalLexer:
             self.tokens.append(("ERRO('FIM DE ARQUIVO INESPERADO')",'1'))
         return self.tokens
 
-f_in = open('meu_programa.txt', 'r')
-source_code = f_in.read()
-f_in.close()
-
-lexer = PascalLexer(source_code)
-tokens = lexer.tokenize()
-f_out = open('saida.txt', 'w')
-
-for token in tokens:
-    value, word = token
-    f_out.write(word + ', ' + value + '\n')
 
