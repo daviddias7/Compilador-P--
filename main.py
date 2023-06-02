@@ -1,9 +1,17 @@
 import sys
+import os
+
 from compiler.lexical_analyzer import PascalLexer 
 
 if __name__ == '__main__':  
 
-    f_in = open(sys.argv[1], 'r')
+    file_name = sys.argv[1]
+
+    if(not os.path.isfile(file_name)):
+        print("O arquivo " + file_name + " nao existe")
+        exit()
+
+    f_in = open(file_name, 'r')
     source_code = f_in.read()
     f_in.close()
     
