@@ -12,6 +12,25 @@ class PascalLexer:
         ]
         self.end_found = False;
 
+        self.tokenize()
+
+        self.token_index = 0
+
+    
+    def get_next_token(self):
+
+        if(self.token_index == len(self.tokens)):
+            self.token_index = 0
+            return None
+
+        token = self.tokens[self.token_index]
+
+        self.token_index += 1
+        return token
+
+    def get_all_tokens(self):
+        return self.tokens
+
     def tokenize(self):
         source_code = self.source_code
         while source_code:
@@ -82,6 +101,5 @@ class PascalLexer:
                 source_code = source_code[1:]
         if self.end_found == False:
             self.tokens.append(("ERRO('FIM DE ARQUIVO INESPERADO')",'1'))
-        return self.tokens
 
 
