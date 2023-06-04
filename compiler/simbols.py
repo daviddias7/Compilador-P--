@@ -11,7 +11,8 @@ simbols_table = {
         "while": "SIMB_WHILE",
         "do": "SIMB_DO",
         "procedure": "SIMB_PROCEDURE",
-        "for": "SIMB_FOR"
+        "for": "SIMB_FOR",
+        "to": "SIMB_TO"
         }
 
 operators_table = {
