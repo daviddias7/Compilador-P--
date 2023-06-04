@@ -18,22 +18,21 @@ if __name__ == '__main__':
     lexer = PascalLexer(source_code)
     tokens = lexer.get_all_tokens()
 
+    #f_out = open('saida.txt', 'w')
+    #
+    #for token in tokens:
+    #    value, word = token
+    #    f_out.write(word + ', ' + value + '\n')
 
-    f_out = open('saida.txt', 'w')
+    #f_out.close()
+
     
-    for token in tokens:
+    token = lexer.get_next_token()
+    f_out = open('saida2.txt', 'w')
+    while(token != None):
         value, word = token
         f_out.write(word + ', ' + value + '\n')
+        token = lexer.get_next_token()
 
     f_out.close()
-
-    
-#    token = lexer.get_next_token()
-#    f_out = open('saida2.txt', 'w')
-#    while(token != None):
-#        value, word = token
-#        f_out.write(word + ', ' + value + '\n')
-#        token = lexer.get_next_token()
-#
-#    f_out.close()
 

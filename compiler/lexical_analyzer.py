@@ -1,12 +1,10 @@
 import re
+from compiler.simbols import simbols_table  
 
 class PascalLexer:
     def __init__(self, source_code):
         self.source_code = source_code
         self.tokens = []
-        self.keywords = [
-            'if', 'then', 'else', 'while', 'do', 'procedure', 'for'
-        ]
         self.operators = [
             '+', '-', '*', '/', '=', '<', '>', '<=', '>=', '<>', ':=', '.', '(', ')'
         ]
@@ -34,6 +32,7 @@ class PascalLexer:
     def tokenize(self):
         source_code = self.source_code
         while source_code:
+            print(source_code[0])
             if source_code[0].isspace():
                 source_code = source_code[1:]
             elif source_code[0].isdigit():
@@ -55,30 +54,21 @@ class PascalLexer:
                         #real.group()
                         self.tokens.append(('REAL', real))
                         source_code = source_code[len(real):]
-            elif source_code[0].isalpha():
-                identifier = re.match(r'[a-zA-Z]\w*', source_code).group()
-                if identifier == 'program':
-                    self.tokens.append(('SIMB_PROGRAM', identifier))
-                elif identifier == 'var':
-                    self.tokens.append(('SIMB_VAR', identifier))
-                elif identifier == 'begin':
-                    self.tokens.append(('SIMB_BEGIN', identifier))
-                elif identifier == 'end':
-                    self.end_found = True
-                    self.tokens.append(('SIMB_END', identifier))
-                elif identifier == 'integer' or identifier == 'real':
-                    self.tokens.append(('SIMB_TIPO', identifier))
-                elif identifier in self.keywords:
-                    self.tokens.append(('PALAVRA-CHAVE', identifier))
-                else:
-                    self.tokens.append(('IDENTIFICADOR', identifier))
-                source_code = source_code[len(identifier):]
             elif source_code[0] == '{':
                 comment = re.match(r'.*\}', source_code)
                 if comment == None:
                     break;
                 comment = re.match(r'.*\}', source_code).group()
                 source_code = source_code[len(comment):]
+            elif source_code[0].isalpha():
+                identifier = re.match(r'[a-zA-Z]\w*', source_code).group()
+                if identifier in simbols_table:
+                    self.tokens.append((simbols_table[identifier], identifier))
+                    if identifier == 'end':
+                        self.end_found = True
+                else:
+                    self.tokens.append(('IDENTIFICADOR', identifier))
+                source_code = source_code[len(identifier):]
             elif source_code[0] in self.operators:
                 operator = source_code[0]
                 self.tokens.append(('OPERADOR', operator))
