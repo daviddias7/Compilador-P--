@@ -1,13 +1,10 @@
 import re
-from compiler.simbols import simbols_table  
+from compiler.simbols import *  
 
 class PascalLexer:
     def __init__(self, source_code):
         self.source_code = source_code
         self.tokens = []
-        self.operators = [
-            '+', '-', '*', '/', '=', '<', '>', '<=', '>=', '<>', ':=', '.', '(', ')'
-        ]
         self.end_found = False;
 
         self.tokenize()
@@ -32,7 +29,6 @@ class PascalLexer:
     def tokenize(self):
         source_code = self.source_code
         while source_code:
-            print(source_code[0])
             if source_code[0].isspace():
                 source_code = source_code[1:]
             elif source_code[0].isdigit():
@@ -69,21 +65,11 @@ class PascalLexer:
                 else:
                     self.tokens.append(('IDENTIFICADOR', identifier))
                 source_code = source_code[len(identifier):]
-            elif source_code[0] in self.operators:
-                operator = source_code[0]
-                self.tokens.append(('OPERADOR', operator))
-                source_code = source_code[1:]
-            elif source_code[0] == ',':
-                vir = source_code[0]
-                self.tokens.append(('SIMB_VIR', vir))
-                source_code = source_code[1:]
-            elif source_code[0] == ':':
-                dp = source_code[0]
-                self.tokens.append(('SIMB_DP', dp))
-                source_code = source_code[1:]
-            elif source_code[0] == ';':
-                pv = source_code[0]
-                self.tokens.append(('SIMB_PV', pv))
+            elif source_code[:2] in operators_table:
+                self.tokens.append((operators_table[source_code[:2]], source_code[:2]))
+                source_code = source_code[2:]
+            elif source_code[0] in operators_table:
+                self.tokens.append((operators_table[source_code[0]], source_code[0]))
                 source_code = source_code[1:]
             else:
                 error = source_code[0]
