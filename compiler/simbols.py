@@ -12,7 +12,9 @@ simbols_table = {
         "do": "SIMB_DO",
         "procedure": "SIMB_PROCEDURE",
         "for": "SIMB_FOR",
-        "to": "SIMB_TO"
+        "to": "SIMB_TO",
+        "read": "SIMB_READ",
+        "write": "SIMB_WRITE"
         }
 
 operators_table = {
