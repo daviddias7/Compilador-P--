@@ -57,7 +57,6 @@ class PascalLexer:
                 comment = re.match(r'.*\}', source_code).group()
                 source_code = source_code[len(comment):]
             elif source_code[0].isalpha() or source_code[0] == '_':
-                print("verificar se tem o _: " + source_code[0])
                 identifier = re.match(r'[a-zA-Z_]\w*', source_code).group()
                 if identifier in simbols_table:
                     self.tokens.append((simbols_table[identifier], identifier))
