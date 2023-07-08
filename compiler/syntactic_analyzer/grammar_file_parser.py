@@ -29,6 +29,7 @@ def grammar_file_parser(file_name: str):
     with open(file_name, "r") as file:
         lines = file.readlines()
         for line in lines:
+            line = line.strip()
             split_line = line.split(" ::= ")
             raw_rules_options = split_line[1].split(" | ")
             rules_parsed = []

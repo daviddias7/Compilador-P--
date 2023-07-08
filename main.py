@@ -2,6 +2,7 @@ import sys
 import os
 
 from compiler.lexical_analyzer.pascal_lexer import PascalLexer 
+from compiler.syntactic_analyzer.pascal_sintactic import PascalSyntactic
 
 if __name__ == '__main__':  
 
@@ -16,13 +17,16 @@ if __name__ == '__main__':
     f_in.close()
     
     lexer = PascalLexer(source_code)
+    syntactic = PascalSyntactic()
+    syntactic.print_first()
     
-    token = lexer.get_next_token()
-    f_out = open('saida.txt', 'w')
-    while(token != None):
-        value, word = token
-        f_out.write(word + ', ' + value + '\n')
-        token = lexer.get_next_token()
+    #token = lexer.get_next_token()
+    #f_out = open('saida.txt', 'w')
+    #while(token != None):
+    #    value, word = token
+    #    f_out.write(word + ', ' + value + '\n')
+    #    token = lexer.get_next_token()
 
-    f_out.close()
+    #f_out.close()
+
 
