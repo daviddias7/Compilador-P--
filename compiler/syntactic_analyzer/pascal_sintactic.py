@@ -14,7 +14,7 @@ class PascalSyntactic:
         rule = self.grammar_rules[rule_name]
 
         if rule.first:
-            return rule.first.keys()
+            return list(rule.first.keys())
 
         for option_index in range(0, len(rule.rules_options_list)):
             rule_option = rule.rules_options_list[option_index]
@@ -25,15 +25,22 @@ class PascalSyntactic:
                 rule.first.update({first_element.value: option_index})
             else:
                 first_set = self.first_search(first_element.value)
+                if "λ" in first_set and len(rule_option) >= 2:
+                    if rule_option[1].rule_type == "terminal":
+                        first_set.append(rule_option[1].value)
+                    else:
+                        first_set += self.first_search(rule_option[1].value) 
+
                 for elem in first_set:
                     if not elem in rule.first:
                         rule.first[elem] = option_index
 
-        return rule.first.keys()
+        return list(rule.first.keys())
 
     def print_first(self):
         for rule_name, rule_obj in self.grammar_rules.items():
-            print(rule_name + " " + str(list(rule_obj.first.keys())))
+            print(rule_name + " " + str(rule_obj.first))
+
 
     #def complete_followers_search(self):
     #    for rule_name, rule_obj in self.grammar_rules.items():
