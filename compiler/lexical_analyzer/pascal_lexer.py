@@ -1,5 +1,5 @@
 import re
-from compiler.simbols import *  
+from compiler.lexical_analyzer.simbols import *  
 
 class PascalLexer:
     def __init__(self, source_code):

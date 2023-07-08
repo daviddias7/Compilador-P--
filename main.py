@@ -1,7 +1,7 @@
 import sys
 import os
 
-from compiler.lexical_analyzer import PascalLexer 
+from compiler.lexical_analyzer.pascal_lexer import PascalLexer 
 
 if __name__ == '__main__':  
 
