@@ -4,6 +4,7 @@ class PascalSyntactic:
     def __init__(self):
         self.grammar_rules = grammar_file_parser("./compiler/gramatica.txt")
         self.complete_first_search()
+        self.complete_followers_search()
 
     def complete_first_search(self):
         for rule in self.grammar_rules.keys():
@@ -24,14 +25,21 @@ class PascalSyntactic:
             if(first_element.rule_type == "terminal"):
                 rule.first.update({first_element.value: option_index})
             else:
-                first_set = self.first_search(first_element.value)
-                if "λ" in first_set and len(rule_option) >= 2:
-                    if rule_option[1].rule_type == "terminal":
-                        first_set.append(rule_option[1].value)
+                first_list = self.first_search(first_element.value)
+                final_first_list = first_list.copy()
+                for rule_option_position in range(1, len(rule_option)):
+                    if "λ" in first_list:
+                        if rule_option[rule_option_position].rule_type == "terminal":
+                            first_list = [rule_option[rule_option_position].value]
+                        else:
+                            first_list = self.first_search(rule_option[rule_option_position].value)
+                        final_first_list += first_list
                     else:
-                        first_set += self.first_search(rule_option[1].value) 
+                        if "λ" in final_first_list:
+                            final_first_list.remove("λ")
+                        break
 
-                for elem in first_set:
+                for elem in final_first_list:
                     if not elem in rule.first:
                         rule.first[elem] = option_index
 
