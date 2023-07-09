@@ -5,6 +5,7 @@ class PascalSyntactic:
         self.grammar_rules = grammar_file_parser("./compiler/gramatica.txt")
         self.complete_first_search()
         self.complete_followers_search()
+        self.panic_list = [';', ')']
 
     def complete_first_search(self):
         for rule in self.grammar_rules.keys():
@@ -131,7 +132,63 @@ class PascalSyntactic:
         for rule_name, rule_obj in self.grammar_rules.items():
             print(rule_name + " " + str(rule_obj.follower))
 
-                    
+    def parse(self, lexer):
+        current_rule = '<programa>'
+        token = lexer.get_next_token();
+        self.parse_rec(lexer, current_rule, token)
+        print()
+
+    def parse_rec(self, lexer, current_rule, token):
+        value, word = token
+        print("current word: " + word + " current rule: " + current_rule)
+        rule_options_index = 0
+
+		# Nesse laço veremos se o token atual esta na lista de primeiros da regra
+        firstFound = False
+        if word in self.grammar_rules[current_rule].first:
+                rule_options_index = self.grammar_rules[current_rule].first[word]
+                firstFound = True
+		
+        if firstFound: # Se foi encontrado na lista de first (analise preditiva)
+            nextRule = self.grammar_rules[current_rule].rules_options_list[rule_options_index] # Proxima regra a ser analisada
+            # Acho que temos que iterar sobre nextRule [<fator>, <cmd>, <variavel>]
+            for ruleElem in nextRule:
+                if ruleElem.rule_type == 'non_terminal': # Se for nao terminal, continua recursao
+                    self.parse_rec(lexer, ruleElem.value, token) # Encontra as regras do nao terminal em questao
+                elif word == ruleElem.value:
+                    print("word: " + word + " ruleElem: " + ruleElem.value)
+                    value, word = lexer.get_next_token()
+                    token = (value, word)
+
+                else:
+                    print('Erro sintatico na linha xxx (TODO): Esperado ', ruleElem.value, 'porém recebido ', word)
+
+                #    if ruleElem.value != value: # Se for terminal, mas o valor do token nao for igual ao valor do terminal esperado pela regra gera erro (nao tenho certeza se faz sentido, talvez seja desnecessario pois ja chequei que o word esta certo)
+					    # TODO: Erro
+                #        print('Erro sintatico na linha xxx (TODO): Esperado ', nextRule.value, 'porém recebido ', value)
+            return
+
+	# Caso haja um elemento vazio nos primeiros da regra atual, checar se algum seguidor tem o token atual.
+	# Se sim, faz a recursao com o proximo nao terminal
+	# TODO: Talvez trocar esse λ por 'lambda' 
+        if 'λ' in self.grammar_rules[current_rule].first:
+            if word in self.grammar_rules[current_rule].follower:
+                return
+           # for followElem in self.grammar_rules[current_rule].follower:
+           #     if followElem == word:
+           #         self.parse_rec(lexer, self.grammar_rules[followElem])
+           #         return
+
+        print(word + " " + str(self.grammar_rules[current_rule].first))
+	# Se nao encontrou depois de analisar, erro e modo panico
+        print('Erro sintatico na linha xxx (TODO): , self.grammar_rules[current_rule].panic,  esperado')
+
+	# Modo panico
+        #value, word = lexer.get_next_token()
+        #while word not in self.grammar_rules.panic_list:
+        #    value, word = lexer.get_next_token()
+
+        return                    
 
 
             

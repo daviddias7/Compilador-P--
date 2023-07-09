@@ -28,7 +28,10 @@ class PascalLexer:
 
     def tokenize(self):
         source_code = self.source_code
+        line_index = 0
         while source_code:
+            if source_code[0] == "\n":
+                line_index += 1
             if source_code[0].isspace():
                 source_code = source_code[1:]
             elif source_code[0].isdigit():
@@ -43,12 +46,14 @@ class PascalLexer:
                         # Rodando o match de novo porque integer.group() nao esta transformando em string
                         integer = re.match(r'\d+', source_code).group()
                         #integer.group()
-                        self.tokens.append(('INTEIRO', integer))
+                        self.tokens.append(('INTEIRO', 'numero_int'))
+#                        self.tokens.append(('INTEIRO', integer))
                         source_code = source_code[len(integer):]
                     else:
                         real = re.match(r'\d+\.\d+', source_code).group()
                         #real.group()
-                        self.tokens.append(('REAL', real))
+                        self.tokens.append(('REAL', 'numero_real'))
+                        #self.tokens.append(('REAL', real))
                         source_code = source_code[len(real):]
             elif source_code[0] == '{':
                 comment = re.match(r'.*\}', source_code)
@@ -63,7 +68,8 @@ class PascalLexer:
                     if identifier == 'end':
                         self.end_found = True
                 else:
-                    self.tokens.append(('IDENTIFICADOR', identifier))
+                    self.tokens.append(('IDENTIFICADOR', "ident"))
+#                    self.tokens.append(('IDENTIFICADOR', identifier))
                 source_code = source_code[len(identifier):]
             elif source_code[:2] in operators_table:
                 self.tokens.append((operators_table[source_code[:2]], source_code[:2]))
@@ -75,7 +81,9 @@ class PascalLexer:
                 error = source_code[0]
                 self.tokens.append(("ERRO('CARACTERE NAO PERMITIDO')",  error))
                 source_code = source_code[1:]
+                print("Erro lexico na linha: " + str(line_index))
         if self.end_found == False:
             self.tokens.append(("ERRO('FIM DE ARQUIVO INESPERADO')",'1'))
+            print("Erro lexico na linha: " + str(line_index))
 
 

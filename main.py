@@ -18,7 +18,7 @@ if __name__ == '__main__':
     
     lexer = PascalLexer(source_code)
     syntactic = PascalSyntactic()
-    syntactic.print_first()
+    syntactic.parse(lexer)
     
     #token = lexer.get_next_token()
     #f_out = open('saida.txt', 'w')
