@@ -50,16 +50,87 @@ class PascalSyntactic:
             print(rule_name + " " + str(rule_obj.first))
 
 
-    #def complete_followers_search(self):
-    #    for rule_name, rule_obj in self.grammar_rules.items():
-    #        for option in rule.rules_options_list:
-            
+    # A funcao abaixo eh o ponto de entrada para a obtencao dos seguidores
+    # de cada nao terminal. Os nomes dos nao terminais sao passados um por
+    # um para a funcao followers_search, a qual fara as buscas necessarias
+    # para determinar os seguidores do elemento nao terminal solicitado pela
+    # complete_followers_search.
+    def complete_followers_search(self):
+        visited = dict.fromkeys(self.grammar_rules.keys(), 0)
+        
+        for rule in self.grammar_rules.keys():
+            self.followers_search(rule, visited)
 
-    #def followers_search(self, rule_name):
-    #        for elem_index in range(0, len(option)):
-    #            if option[elem_index].rule_type == "non-terminal":
-    #                if elem_index + 1 == len(option):
-                        #sera o seguidor de rule_name
+    # A funcao abaixo retorna uma lista contendo os indices das posicoes onde
+    # uma regra especifica foi encontrada. A derivation_option armazena uma 
+    # opcao de derivacao para uma regra especifica. Por exemplo, a regra
+    # 'condicao> ::= <expressao> <relacao> <expressao>' possui apenas uma opcao
+    # de derivacao, entao a unica possibilidade de derivation_option eh 
+    # derivation_option = [<expressao>, <relacao>, <expressao>]. Nesse caso,
+    # se desired_rule = "<expressao>", entao a list indexes a ser retornada
+    # seria igual a [0, 2]. Se desired_rule = "<relacao>", entao indexes seria
+    # igual a [1]. Vale comentar que derivation_option nao eh uma lista de strings
+    # mas sim de objetos do tipo RuleElement. 
+    def get_rule_indexes(self, derivation_option, desired_rule):
+        indexes = []
+        for i in range(0, len(derivation_option)):
+            if derivation_option[i].value == desired_rule:
+                    indexes.append(i)
+        return indexes
+
+    # A funcao followers_search eh utilizada para fazer a busca dos seguidores
+    # de uma regra especifica, a qual eh passada pela funcao complete_followers_search.
+    # Como a determinacao dos seguidores de uma regra muitas vezes necessita dos 
+    # seguidores de outra regra, a funcao followers_search realiza chamadas recursivas.
+    # Para que ciclos infinitos nao ocorram, o dicionario visited eh utilizado para 
+    # marcar as regras que estao naquela ramificacao recursiva.
+    def followers_search(self, desired_rule, visited):
+        
+        # Primeiro, o objeto da regra desejada eh obtido. Este objeto eh do tipo Rule.
+        desired_rule_obj = self.grammar_rules[desired_rule]
+
+        # Se os seguidores da regra desejada ja foram obtidos, ou a regra ja foi visitada
+        # durante a recursao, entao o set contendo os seguidores eh retornado.
+        if desired_rule_obj.follower or visited[desired_rule] == 1:
+            return desired_rule_obj.follower
+
+        # A regra desejada eh marcada como visitada
+        visited[desired_rule] = 1
+        
+        
+        for rule_name, rule_obj in self.grammar_rules.items():
+            for derivation_option in rule_obj.rules_options_list:
+
+                indexes = self.get_rule_indexes(derivation_option, desired_rule)
+
+                for rule_index in indexes:
+                    for rule_option_position in range(rule_index, len(derivation_option)):
+                        
+                        if derivation_option[rule_option_position].rule_type == "terminal":
+                            desired_rule_obj.follower.update({derivation_option[rule_option_position].value}) 
+                            break
+                        elif derivation_option[rule_option_position].value != desired_rule:
+                            rule_option_obj = self.grammar_rules[derivation_option[rule_option_position].value]
+                            first_set = set(rule_option_obj.first)
+
+                            if "λ" in first_set:
+                                first_set.remove("λ")
+                                desired_rule_obj.follower.update(first_set)
+                            else:
+                                desired_rule_obj.follower.update(first_set)
+                                break
+                        elif visited[rule_name] == 0 and rule_option_position == len(derivation_option) - 1:
+                            desired_rule_obj.follower.update(self.followers_search(rule_name, visited)) 
+
+
+        visited[desired_rule] = 0
+
+        return desired_rule_obj.follower
+
+    def print_followers(self):
+        for rule_name, rule_obj in self.grammar_rules.items():
+            print(rule_name + " " + str(rule_obj.follower))
+
                     
 
 
