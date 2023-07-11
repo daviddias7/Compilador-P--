@@ -17,7 +17,8 @@
 <mais_ident> ::= ; <argumentos> | λ
 <pfalsa> ::= else <cmd> | λ
 <comandos> ::= <cmd> ; <comandos> | λ
-<cmd> ::= read ( <variaveis> ) | write ( <variaveis> ) | while ( <condicao> ) do <cmd> | if <condicao> then <cmd> <pfalsa> | ident := <expressao> | ident <lista_arg> | begin <comandos> end
+<cmd> ::= read ( <variaveis> ) | write ( <variaveis> ) | while ( <condicao> ) do <cmd> | if <condicao> then <cmd> <pfalsa> | ident <cmd'> | begin <comandos> end
+<cmd'> ::= := <expressao> | <lista_arg>
 <condicao> ::= <expressao> <relacao> <expressao>
 <relacao> ::= = | <> | >= | <= | > | <
 <expressao> ::= <termo> <outros_termos>
