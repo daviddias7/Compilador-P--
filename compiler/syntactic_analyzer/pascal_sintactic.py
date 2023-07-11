@@ -1,11 +1,12 @@
 from compiler.syntactic_analyzer.grammar_file_parser import grammar_file_parser
 
 class PascalSyntactic:
-    def __init__(self):
+    def __init__(self, lexer):
         self.grammar_rules = grammar_file_parser("./compiler/gramatica.txt")
         self.complete_first_search()
         self.complete_followers_search()
         self.panic_list = [';', ')']
+        self.lexer = lexer
 
     def complete_first_search(self):
         for rule in self.grammar_rules.keys():
@@ -132,15 +133,15 @@ class PascalSyntactic:
         for rule_name, rule_obj in self.grammar_rules.items():
             print(rule_name + " " + str(rule_obj.follower))
 
-    def parse(self, lexer):
+    def parse(self):
         current_rule = '<programa>'
-        token = lexer.get_next_token();
-        self.parse_rec(lexer, current_rule, token)
+        token = self.lexer.get_next_token();
+        self.parse_rec(current_rule, token)
         print()
 
-    def parse_rec(self, lexer, current_rule, token):
+    def parse_rec(self, current_rule, token):
         value, word = token
-        print("current word: " + word + " current rule: " + current_rule)
+        print("current word: " + word + " current rule: " + current_rule + " current value: " + value)
         rule_options_index = 0
 
 		# Nesse laço veremos se o token atual esta na lista de primeiros da regra
@@ -153,11 +154,13 @@ class PascalSyntactic:
             nextRule = self.grammar_rules[current_rule].rules_options_list[rule_options_index] # Proxima regra a ser analisada
             # Acho que temos que iterar sobre nextRule [<fator>, <cmd>, <variavel>]
             for ruleElem in nextRule:
+                print("word: " + word + " ruleElem: " + ruleElem.value)
                 if ruleElem.rule_type == 'non_terminal': # Se for nao terminal, continua recursao
-                    self.parse_rec(lexer, ruleElem.value, token) # Encontra as regras do nao terminal em questao
+                    self.parse_rec(ruleElem.value, token) # Encontra as regras do nao terminal em questao
                 elif word == ruleElem.value:
-                    print("word: " + word + " ruleElem: " + ruleElem.value)
-                    value, word = lexer.get_next_token()
+                    value, word = self.lexer.get_next_token()
+                    while(value.startswith("ERRO")):
+                        value, word = self.lexer.get_next_token()
                     token = (value, word)
 
                 else:
