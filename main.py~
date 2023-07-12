@@ -19,7 +19,7 @@ if __name__ == '__main__':
     lexer = PascalLexer(source_code)
     syntactic = PascalSyntactic(lexer)
     syntactic.parse()
-    #syntactic.print_first()
+    syntactic.print_first()
     
    # token = lexer.get_next_token()
     

@@ -172,11 +172,8 @@ class PascalSyntactic:
                     erro_acusado = True
 
                     #Modo panico
-                    #if ruleElem.value not in self.panic_list and token.word in self.panic_list:
-                    # Acusa erros que nao existem posteriormente, mas acusa os erros que existem tambem
-                    token = self.lexer.get_next_token();
-                    if token == None:
-                        return None
+                    if ruleElem.value not in self.panic_list and token.word in self.panic_list:
+                        token = self.lexer.get_next_token();
 
                     while token.word not in self.panic_list:
                        # print("Modo panico token:", token.word)
@@ -215,7 +212,6 @@ class PascalSyntactic:
 
                     #Modo panico
                     #if ruleElem.value not in self.panic_list and token.word in self.panic_list:
-                    # Acusa erros que nao existem posteriormente, mas acusa os erros que existem tambem
                     token = self.lexer.get_next_token();
                     if token == None:
                         return None
