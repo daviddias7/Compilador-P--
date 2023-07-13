@@ -5,9 +5,19 @@ Compilador para a linguagem educacional P--
 ```
 .
 ├── compiler
-│   ├── lexical_analyzer.py
+│   ├── lexical_analyzer
+│   └── pascal_lexer.py
 │   └── simbols.py
+│   └── token.py
+│
+│   ├── syntactic_analyser
+|   └── grammar_file_parser.py
+│   └── pascal_syntactic.py
+│   └── rule.py
+│   └── rule_element.py
+│
 ├── exemplo_programa.txt
+├── saida.txt
 ├── main.py
 └── README.md
 ```
