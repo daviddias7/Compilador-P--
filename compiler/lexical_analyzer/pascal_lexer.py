@@ -3,12 +3,12 @@ from compiler.lexical_analyzer.simbols import *
 from compiler.lexical_analyzer.token import Token
 
 class PascalLexer:
-    def __init__(self, source_code):
+    def __init__(self, source_code, f_out):
         self.source_code = source_code
         self.tokens = []
         self.end_found = False;
 
-        self.tokenize()
+        self.tokenize(f_out)
 
         self.token_index = 0
 
@@ -27,7 +27,7 @@ class PascalLexer:
     def get_all_tokens(self):
         return self.tokens
 
-    def tokenize(self):
+    def tokenize(self, f_out):
         source_code = self.source_code
         line_index = 1
         while source_code:
@@ -39,7 +39,7 @@ class PascalLexer:
                 if source_code[1].isalpha():
                     erro = re.match(r'[a-zA-Z0-9]+', source_code).group()
                     self.tokens.append(Token("ERRO('IDENTIFICADOR MAL FORMADO')", "ident", line_index))
-                    print("Erro lexico na linha ", line_index, ": identificador mal formado")
+                    f_out.write("Erro lexico na linha " + str(line_index) + ": Identificador mal formado \n")
                     source_code = source_code[len(erro):]
                 else:
                     integer = re.match(r'\d+', source_code)
@@ -83,9 +83,9 @@ class PascalLexer:
                 error = source_code[0]
                 self.tokens.append(Token("ERRO('CARACTERE NAO PERMITIDO')",  error, line_index))
                 source_code = source_code[1:]
-                print("Erro lexico na linha " + str(line_index), ": Caractere nao permitido")
+                f_out.write("Erro lexico na linha " + str(line_index) + ": Caractere nao permitido \n")
         if self.end_found == False:
             self.tokens.append(Token("ERRO('FIM DE ARQUIVO INESPERADO')",'1', line_index))
-            print("Erro lexico na linha " + str(line_index) + ": Fim de arquivo inesperado")
+            f_out.write("Erro lexico na linha " + str(line_index) + ": Fim de arquivo inesperado \n")
 
 

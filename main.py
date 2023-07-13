@@ -16,19 +16,11 @@ if __name__ == '__main__':
     source_code = f_in.read()
     f_in.close()
     
-    lexer = PascalLexer(source_code)
-    syntactic = PascalSyntactic(lexer)
+    f_out = open('saida.txt', 'w')
+    lexer = PascalLexer(source_code, f_out)
+    syntactic = PascalSyntactic(lexer, f_out)
     syntactic.parse()
-    #syntactic.print_first()
-    
-   # token = lexer.get_next_token()
-    
-    #f_out = open('saida.txt', 'w')
-    #while(token != None):
-    #    value, word = token
-    #    f_out.write(word + ', ' + value + '\n')
-    #    token = lexer.get_next_token()
 
-    #f_out.close()
+    f_out.close()
 
 
